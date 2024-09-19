@@ -37,7 +37,7 @@ def main():
     Saldo = 0.0
     contas = []
     usuarios = []
-    numero_conta s = 0
+    numero_contas = 0
     saques = []
     depositos
 
