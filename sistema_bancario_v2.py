@@ -1,4 +1,4 @@
-# Segunda Versão do Sistema Bancário Para O Bootcamp Engenharia de dados DIO NTTDATA
+from datetime import datetime
 
 def menu():
   texto = """\n\t=============== Menu ===============
@@ -13,14 +13,42 @@ def menu():
 
   return int(input(texto))
 
-def depositar(saldo, valor, extrato, /):
+def depositar(saldo, valor, extrato, /):  #Função depósito pode receber argumentos apenas por posição: sugestão de argumentos
+  #do depósito: saldo ,valor e extrato  >>> Sugestão de retorno: Saldo e extrato
     saldo += valor
-    extrato += f"\n{extrato} "
+    hora_deposito = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    extrato += f"\n Depósito: {valor:.2f} - {hora_deposito}"
+    return saldo,extrato
 
-def sacar():
-    pass
+def sacar(*,saldo,extrato,limite,numero_saques,limite_de_saques,saques): #A função de saque deve receber argumentos apenas por nome
 
-def extrato():
+    if numero_saques < limite_de_saques: #verifica se já foi excedido o limite de saque
+        valor_saque = float(input("Quanto Deseja Sacar? R$"))
+        if valor_saque > 0:#verifica se o valor que o usuario esta colocando é positivo
+            if valor_saque <= 500: #verifica se o valor do saque segue a regra de R$500 por saque
+                if (saldo - valor_saque) < 0:
+                    print("Saldo Insuficiente")
+                else:
+                    saldo -= valor_saque
+                    saques.append(valor_saque)
+                    hora_saque = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                    numero_saques += 1
+                    extrato += f"\n Saque: {valor_saque} - {hora_saque}"
+                    print(f"Quantidade de Saques {numero_saques}")
+                    return saldo ,extrato, numero_saques
+            else:
+                print("Você Não Pode Fazer um Saque acima de R$500")
+                return saldo ,extrato, numero_saques
+        else:
+            print("Erro Na Operação! Digite um Valor positivo!")
+            return saldo ,extrato, numero_saques
+    else:
+        print("Limite de Saque Excedido! Você não Pode fazer mais que três Saques!")
+        return saldo ,extrato,numero_saques
+
+
+def extrato(saldo,/,*,extrato):  #A função de extrato deve receber argumentos por posição e por nome
+  #===>>> argumentos posicionais:Saldos , argumentos nomeados: Extratos
     pass
 def filtrar_usuario():
     pass
@@ -32,14 +60,39 @@ def criar_conta():
     pass
 
 def main():
-    opcao = menu()
+
     LIMITE_DE_SAQUE = 3
-    Saldo = 0.0
+    saldo = 0.0
     contas = []
     usuarios = []
     numero_contas = 0
     saques = []
-    depositos
+    depositos = []
+    extratos = ""
+    limite = 500
+    numero_saques = 0
 
+    while True:
+        try:
+
+            opcao = menu()
+            parada = True
+            match(opcao):
+                case 1:
+                    valor = float(input("Quanto Deseja Depositar? R$"))
+                    saldo,extratos = depositar(saldo, valor, extratos)
+                    print(f"Saldo => {saldo}")
+                    print(f"{extratos}")
+                case 2:
+                    saldo,extratos ,numero_saques = sacar(saldo=saldo,extrato=extratos,limite=limite,numero_saques=numero_saques,limite_de_saques=LIMITE_DE_SAQUE,saques=saques)
+
+                case 0:
+                    parada = False
+
+            if parada == False:
+                break
+
+        except ValueError: #aqui ele verifica se foi clicado a tecla enter
+            print("Digite Uma Opção Válida ")
 main()
 
