@@ -17,7 +17,8 @@ def depositar(saldo, valor, extrato, /):  #Função depósito pode receber argum
   #do depósito: saldo ,valor e extrato  >>> Sugestão de retorno: Saldo e extrato
     saldo += valor
     hora_deposito = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    extrato += f"\n Depósito: {valor:.2f} - {hora_deposito}"
+    extrato.append(f"\n Depósito: {valor:.2f} - {hora_deposito}")
+    print("Depósito Efetuado com Sucesso!")
     return saldo,extrato
 
 def sacar(*,saldo,extrato,limite,numero_saques,limite_de_saques,saques): #A função de saque deve receber argumentos apenas por nome
@@ -30,10 +31,9 @@ def sacar(*,saldo,extrato,limite,numero_saques,limite_de_saques,saques): #A fun�
                     print("Saldo Insuficiente")
                 else:
                     saldo -= valor_saque
-                    saques.append(valor_saque)
                     hora_saque = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                    extrato.append(f"\n Saque: {valor_saque:.2f} - {hora_saque}")
                     numero_saques += 1
-                    extrato += f"\n Saque: {valor_saque} - {hora_saque}"
                     print(f"Quantidade de Saques {numero_saques}")
                     return saldo ,extrato, numero_saques
             else:
@@ -49,7 +49,13 @@ def sacar(*,saldo,extrato,limite,numero_saques,limite_de_saques,saques): #A fun�
 
 def extrato(saldo,/,*,extrato):  #A função de extrato deve receber argumentos por posição e por nome
   #===>>> argumentos posicionais:Saldos , argumentos nomeados: Extratos
-    pass
+    print("=============== Extrato ===============\n")
+    if not extrato:
+        print("Ainda Não Há Movimentações!")
+    else:
+        print(f"Saldo: R${saldo:.2f}")
+        for operacao in extrato:
+            print(operacao)
 def filtrar_usuario():
     pass
 
@@ -68,7 +74,7 @@ def main():
     numero_contas = 0
     saques = []
     depositos = []
-    extratos = ""
+    extratos = []
     limite = 500
     numero_saques = 0
 
@@ -80,12 +86,13 @@ def main():
             match(opcao):
                 case 1:
                     valor = float(input("Quanto Deseja Depositar? R$"))
-                    saldo,extratos = depositar(saldo, valor, extratos)
-                    print(f"Saldo => {saldo}")
-                    print(f"{extratos}")
+                    saldo, extratos = depositar(saldo, valor, extratos)
+
                 case 2:
                     saldo,extratos ,numero_saques = sacar(saldo=saldo,extrato=extratos,limite=limite,numero_saques=numero_saques,limite_de_saques=LIMITE_DE_SAQUE,saques=saques)
 
+                case 3:
+                    extrato(saldo,extrato=extratos)
                 case 0:
                     parada = False
 
