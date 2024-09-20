@@ -72,8 +72,6 @@ def main():
     contas = []
     usuarios = []
     numero_contas = 0
-    saques = []
-    depositos = []
     extratos = []
     limite = 500
     numero_saques = 0
