@@ -6,9 +6,11 @@ def menu():
     [1] -->>> Depósito
     [2] -->>> Saque
     [3] -->>> Extrato Bancário
-    [4] -->>> Listar Contas
-    [5] -->>> Novo usuário
+    [4] -->>> Criar Usuário
+    [5] -->>> Criar Conta
+    [6] -->>> Listar Contas
     [0] -->>> Sair Do ProGrama
+    Escolha Uma Opção: 
   """
 
   return int(input(texto))
@@ -21,7 +23,7 @@ def depositar(saldo, valor, extrato, /):  #Função depósito pode receber argum
     print("Depósito Efetuado com Sucesso!")
     return saldo,extrato
 
-def sacar(*,saldo,extrato,limite,numero_saques,limite_de_saques,saques): #A função de saque deve receber argumentos apenas por nome
+def sacar(*,saldo,extrato,limite,numero_saques,limite_de_saques): #A função de saque deve receber argumentos apenas por nome
 
     if numero_saques < limite_de_saques: #verifica se já foi excedido o limite de saque
         valor_saque = float(input("Quanto Deseja Sacar? R$"))
@@ -56,18 +58,46 @@ def extrato(saldo,/,*,extrato):  #A função de extrato deve receber argumentos 
         print(f"Saldo: R${saldo:.2f}")
         for operacao in extrato:
             print(operacao)
-def filtrar_usuario():
-    pass
+def filtrar_usuario(cpf,usuarios):
+    user = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
+    return user[0] if user else None
 
 def criar_usuarios(usuarios):
-    pass
+    cpf = input("Digite O CPF Do Usuario ")
+    usuario = filtrar_usuario(cpf, usuarios)
+    if usuario:
+        print("Esse Usuario Já Existe! O Fluxo de Criação de Usuário Foi encerrado!")
+    else:
+        nome = input("Digite O Nome Do usuário: ")
+        endereco = input("Digite O Endereço no Formato: logradouro, número - bairro - cidade/Sigla estado ")
+        data_nascimento = input("Digite a Data de Nascimento No Formato dd-mm-yy: ")
+        usuarios.append({"nome": nome, "endereco": endereco, "data_nascimento": data_nascimento, "cpf": cpf})
+        print("Usuario Cadastrado Com Sucesso!")
 
-def criar_conta():
-    pass
+def criar_conta(agencia,n_contas,usuarios,contas):
+    cpf = input("Informa o CPF do Usuário: ")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if usuario:
+      contas.append({"Agência": agencia, "Conta": n_contas, "usuario": usuario})
+      print("Conta Criada com Sucesso!")
+    else:
+        print("Usuário Não Cadastrado! Crie uma Conta Para um Usuário que Já esta cadastrado")
+
+def listar_contas(contas):
+  print(f"=============== Contas ===============\n")
+  if not contas:
+      print("Ainda Não Foram Criadas Contas! ")
+  else:
+      for conta in contas:
+          print(f"\n\tAgência: {conta["Agência"]} \n \tConta: {conta["Conta"]} \n \tNome: {conta["usuario"]["nome"]}")
+
+
 
 def main():
 
     LIMITE_DE_SAQUE = 3
+    AGENCIA = "0001"
     saldo = 0.0
     contas = []
     usuarios = []
@@ -87,10 +117,19 @@ def main():
                     saldo, extratos = depositar(saldo, valor, extratos)
 
                 case 2:
-                    saldo,extratos ,numero_saques = sacar(saldo=saldo,extrato=extratos,limite=limite,numero_saques=numero_saques,limite_de_saques=LIMITE_DE_SAQUE,saques=saques)
+                    saldo,extratos ,numero_saques = sacar(saldo=saldo,extrato=extratos,limite=limite,numero_saques=numero_saques,limite_de_saques=LIMITE_DE_SAQUE)
 
                 case 3:
-                    extrato(saldo,extrato=extratos)
+                    extrato(saldo, extrato=extratos)
+                case 4:
+                    criar_usuarios(usuarios)
+                case 5:
+                  numero_contas = len(contas)
+                  numero_contas +=1
+                  criar_conta(AGENCIA, numero_contas, usuarios,contas)
+
+                case 6:
+                    listar_contas(contas)
                 case 0:
                     parada = False
 
